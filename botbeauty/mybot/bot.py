@@ -2,12 +2,11 @@ import os
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackQueryHandler, CallbackContext
 from dotenv import load_dotenv
-from .token import BOT_TOKEN
 
 
 def start(update: Update, context: CallbackContext):
     keyboard = [
-        [InlineKeyboardButton('рпоцедуры', callback_data='процедуры')],
+        [InlineKeyboardButton('процедуры', callback_data='процедуры')],
         [InlineKeyboardButton('салоны', callback_data='салон')],
         [InlineKeyboardButton('мастера', callback_data='мастер')],
         [InlineKeyboardButton('о нас', callback_data='хотите узнать о нас '),
@@ -21,11 +20,13 @@ def start(update: Update, context: CallbackContext):
 def button(update: Update, context: CallbackContext):
     query = update.callback_query
     query.answer()
-    query.edit_message_text(text=f'вы выбоали :{query.data}')
+    query.edit_message_text(text=f'Вы выбрали: {query.data}')
 
 
 def main():
-    updater = Updater(BOT_TOKEN, use_context=True)
+    load_dotenv()
+    token = os.environ['BOT_TOKEN']
+    updater = Updater(token, use_context=True)
     updater.dispatcher.add_handler(CommandHandler('start', start))
     updater.dispatcher.add_handler(CallbackQueryHandler(button))
     updater.start_polling()
@@ -33,5 +34,4 @@ def main():
 
 
 if __name__ == '__main__':
-    load_dotenv()
     main()
